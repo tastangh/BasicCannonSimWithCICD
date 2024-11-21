@@ -1,0 +1,34 @@
+image: gcc
+
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - gcc cannon.c -o cannon -lm
+    - ./cannon
+  artifacts:
+    paths:
+    - cannon
+
+test_job:
+  stage: test
+  script:
+    - set -e
+    - gcc test_cannon.c -o test_cannon -lm
+    - ./test_cannon || exit 1
+  artifacts:
+    paths:
+  only:
+    - master
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Deployed successfully"
+  only:
+    - cannon
+  when: on_success
